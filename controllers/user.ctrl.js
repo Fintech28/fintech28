@@ -120,9 +120,24 @@ const loginUser = (req, res) => {
 };
 
 const checkBalance = (req, res) => {
-    res.status(200).json({
-        message: 'Checking for logged in user...',
-        user: authedProp
+
+    // check whether user exists with email from token auth
+    pool.query(`SELECT * FROM users WHERE email = $1`, [authedProp.email], (errGetLoggedUser, loggedUser) => {
+        if(errGetLoggedUser) throw errGetLoggedUser;
+
+        // return error if user doesn't exist
+        if(loggedUser.rows.length < 1) {
+            return res.status(404).json({
+                error: 'Invalid email, retry your login'
+            });
+        }
+        res.status(200).json({
+            message: 'Your balance information',
+            data: {
+                email: loggedUser.rows[0].email,
+                balance: loggedUser.rows[0].balance
+            }
+        });
     });
 };
 
