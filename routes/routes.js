@@ -21,5 +21,7 @@ router.get('/api/v1/admin/users/userId=:userId', adminCtrl.seeSingleUser);
 router.get('/api/v1/check-balance', authUser.authUserFn, userCtrl.checkBalance);
 // user deposit to account
 router.get('/api/v1/deposit-to-account', authUser.authUserFn, userCtrl.userDepositToAccount);
+// user withdraw from account
+router.get('/api/v1/withdraw-from-account', authUser.authUserFn, userCtrl.userWithdrawFromAccount);
 
 module.exports = router;

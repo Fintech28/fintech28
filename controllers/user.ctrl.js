@@ -192,10 +192,67 @@ const userDepositToAccount = (req, res) => {
         });
     });
 };
+const userWithdrawFromAccount = (req, res) => {
+    const {
+        amount
+    } = req.body;
+    
+    // check for empty amount
+    if(!amount) {
+        return res.status(409).json({
+            error: 'Amount is required'
+        });
+    }
+
+    // check user data
+    pool.query(`SELECT * FROM users WHERE email  =$1`, [authedProp.email], (errGetLoggedUser, loggedUser) => {
+        if(errGetLoggedUser) throw errGetLoggedUser;
+        if(loggedUser.rows.length < 1) {
+            return res.status(404).json({
+                error: 'Invalid email, retry your login'
+            });
+        }
+
+        // calculate total balance now
+        const newBalance = parseInt(loggedUser.rows[0].balance) - parseInt(amount);
+        if(newBalance < 0) {
+            return res.status(409).json({
+                error: `Balance cannot be less than zero. Your balance is ${loggedUser.rows[0].balance}`
+            });
+        }
+
+        // save transaction then update user balance
+        pool.query(`INSERT INTO transactions (byuserid, transactiontype, amount) VALUES ($1, $2, $3)`, [loggedUser.rows[0].id, 'Deposit', amount], (errAddTransaction, transactionAdded) => {
+            if(errAddTransaction) throw errAddTransaction;
+            pool.query(`UPDATE users SET balance = $1 WHERE id = $2`, [newBalance, loggedUser.rows[0].id], (errUpdateBal, balUpdated) => {
+                if(errUpdateBal) throw errUpdateBal;
+
+                // get currently completed transaction id
+                pool.query(`SELECT currval ($1)`, ['transactions_id_seq'], (errgetCurrTransaction, currTransaction) => {
+                    if(errgetCurrTransaction) throw errgetCurrTransaction;
+
+                    // get whole row from currently completed transaction id
+                    pool.query(`SELECT * FROM transactions WHERE id = $1`, [currTransaction.rows[0].currval], (errGetTransaction, transaction) => {
+                        if(errGetTransaction) throw errGetTransaction;
+                        res.status(201).json({
+                            message: 'Withdrawal successful',
+                            data: {
+                                email: loggedUser.rows[0].email,
+                                balance: newBalance,
+                                time: transaction.rows[0].datetime
+                            }
+                        });
+                    });
+                });
+            });
+        });
+    });
+};
 
 module.exports = {
     createUser,
     loginUser,
     checkBalance,
-    userDepositToAccount
+    userDepositToAccount,
+    userWithdrawFromAccount
 };
