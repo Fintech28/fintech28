@@ -51,9 +51,21 @@ const createUser = (req, res) => {
             pool.query(`INSERT INTO USERS (name, email, phone, password, isverified, balance) VALUES ($1, $2, $3, $4, $5, $6)`, [name, email, phone, hash, false, 0], (errAddUser, addedUser) => {
                 if(errAddUser) throw errAddUser;
 
+                // create new token
+                const token = jwt.sign({
+                    email: email
+                }, process.env.secret_key);
+
                 // return success message
                 res.status(200).json({
-                    message: 'Added user successfully'
+                    message: 'User sign up successful',
+                    data: {
+                        name: name,
+                        email: email,
+                        balance: 0,
+                        isverified: false,
+                        token: token
+                    }
                 });
             });
         });
