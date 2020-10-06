@@ -10,6 +10,9 @@ const authUser = require('../controllers/authUser');
 router.post('/api/v1/auth/create-user', userCtrl.createUser); // sign up
 router.post('/api/v1/auth/login-user', userCtrl.loginUser); // log in
 
+// user apply for loan
+router.post('/api/v1/loan-application', authUser.authUserFn, userCtrl.userApplyForLoan);
+
 // admin verify user
 router.patch('/api/v1/admin/verify-user/userId=:userId', adminCtrl.verifyUser);
 // admin see all users

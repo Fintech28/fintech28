@@ -24,11 +24,11 @@ create table loans (
     id serial primary key,
     byuserid integer,
     amount integer,
-    senton timestamp
-    default current_timestamp, 
-    dueon timestamp default current_timestamp,
+    senton timestamp default current_timestamp,
     isconfirmed boolean,
     interestrate integer,
     totalrepaid integer,
-    isfullyrepaid boolean
+    isfullyrepaid boolean,
+    monthsleft integer,
+    dueon varchar(100),
 );

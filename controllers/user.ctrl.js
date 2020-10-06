@@ -307,13 +307,32 @@ const userApplyForLoan = (req, res) => {
        // formula to calculate total interest to be reapid is PRINCIPAL * RATE * TIME
        // Principal is initialized to amount entered by user
        // check that amount is less than 100000
-       if(parseInt(amount) > parseint(maxAmount)) {
+       if(parseInt(amount) > parseInt(maxAmount)) {
            return res.status(409).json({
             error: 'Amount must not be more than 100,000'
            });
        }
-       const interestAccumulated = parseint(amount) * parseint(interestRate / 100) * parseInt(toRepayAfter);
-       const totalToRepay = parseInt(interestAccumulated) + parseint(amount);
+       const interestAccumulated = parseInt(amount) * parseInt(interestRate / 100) * parseInt(toRepayAfter);
+       const totalToRepay = parseInt(interestAccumulated) + parseInt(amount);
+
+       // add new loan request - unconfirmed
+
+       const toPayBy = '2021-10-15'
+       pool.query(`
+       INSERT INTO loans 
+       (byuserid, amount, isconfirmed, interestrate, totalrepaid, isfullyrepaid, monthsleft, dueon)
+       VALUES
+       ($1, $2, $3, $4, $5, $6, $7, $8)`, [loggedUser.rows[0].id, amount, false, interestRate, 0, false, 12, toPayBy], (errAddLoanReq, loanReq) => {
+           if(errAddLoanReq) throw errAddLoanReq;
+           res.status(201).json({
+               message: 'Application received',
+               data: {
+                   email: loggedUser.rows[0].email,
+                   amount: amount,
+                   toBePaidby: toPayBy
+               }
+           });
+       });
     });
 };
 
@@ -323,5 +342,6 @@ module.exports = {
     checkBalance,
     userDepositToAccount,
     userWithdrawFromAccount,
-    userCheckTransactions
+    userCheckTransactions,
+    userApplyForLoan
 };
