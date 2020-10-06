@@ -15,6 +15,10 @@ router.post('/api/v1/loan-application', authUser.authUserFn, userCtrl.userApplyF
 
 // admin verify user
 router.patch('/api/v1/admin/verify-user/userId=:userId', adminCtrl.verifyUser);
+
+// admin approve loan
+router.patch('/api/v1/admin/approve-loan/loanId=:loanApplicationId', adminCtrl.reviewLoanApplication);
+
 // admin see all users
 router.get('/api/v1/admin/users', adminCtrl.seeAllUsers);
 // admin see single users

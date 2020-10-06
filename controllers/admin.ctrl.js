@@ -93,8 +93,58 @@ const seeSingleUser = (req, res, next) => {
     });
 };
 
+const reviewLoanApplication = (req, res) => {
+    const {
+        loanApplicationId
+    } = req.params;
+    
+    // check if loan exists with given id
+    pool.query(`SELECT * FROM loans WHERE id = $1`, [loanApplicationId], (errgetLoanApplication, loanApplication) => {
+        if(errgetLoanApplication) throw errgetLoanApplication;
+        if(loanApplication.rows.length < 1) {
+            return res.status(404).json({
+                error: `No loan found with id ${loanApplicationId}`
+            });
+        }
+
+        // check if loan is already approved
+        if(loanApplication.rows[0].isconfirmed === true) {
+            return res.status(401).json({
+                error: 'Loan already approved'
+            });
+        }
+
+        // otherwise approve loan
+        pool.query(`UPDATE loans SET isconfirmed = $1 WHERE id = $2`, [true, loanApplicationId], (errApproveLoan, approvedLoan) => {
+            if(errApproveLoan) throw errApproveLoan;
+
+            // get data of user who applied for this loan
+            pool.query(`SELECT * FROM users WHERE id = $1`, [loanApplication.rows[0].byuserid], (errGetUser, gotUser) => {
+                if(errGetUser) throw errGetUser;
+
+                //update user balance
+                const newBalance = parseInt(gotUser.rows[0].balance) + parseInt(loanApplication.rows[0].amount)
+                pool.query(`UPDATE users SET balance = $1 WHERE id = $2`, [newBalance ,loanApplication.rows[0].byuserid], (errUpdateBal, updatedBal) => {
+                    if(errUpdateBal) throw errUpdateBal;
+                    res.status(200).json({
+                        message: 'Application confirmed',
+                        data: {
+                            email: gotUser.rows[0].email,
+                            amount: loanApplication.rows[0].amount,
+                            toBePaidBy: loanApplication.rows[0].dueon,
+                            interest: loanApplication.rows[0].intrestrate,
+                            isconfirmed: true
+                        }
+                    });
+                })
+            });
+        });
+    });
+};
+
 module.exports = {
     verifyUser,
     seeAllUsers,
-    seeSingleUser
+    seeSingleUser,
+    reviewLoanApplication
 }
