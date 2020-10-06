@@ -192,6 +192,7 @@ const userDepositToAccount = (req, res) => {
         });
     });
 };
+
 const userWithdrawFromAccount = (req, res) => {
     const {
         amount
@@ -222,7 +223,7 @@ const userWithdrawFromAccount = (req, res) => {
         }
 
         // save transaction then update user balance
-        pool.query(`INSERT INTO transactions (byuserid, transactiontype, amount) VALUES ($1, $2, $3)`, [loggedUser.rows[0].id, 'Deposit', amount], (errAddTransaction, transactionAdded) => {
+        pool.query(`INSERT INTO transactions (byuserid, transactiontype, amount) VALUES ($1, $2, $3)`, [loggedUser.rows[0].id, 'Withdrawal', amount], (errAddTransaction, transactionAdded) => {
             if(errAddTransaction) throw errAddTransaction;
             pool.query(`UPDATE users SET balance = $1 WHERE id = $2`, [newBalance, loggedUser.rows[0].id], (errUpdateBal, balUpdated) => {
                 if(errUpdateBal) throw errUpdateBal;
@@ -249,10 +250,34 @@ const userWithdrawFromAccount = (req, res) => {
     });
 };
 
+const userCheckTransactions = (req, res) => {
+    pool.query(`SELECT * FROM users WHERE email = $1`, [authedProp.email], (errGetUser, gotUser) => {
+        if(errGetUser) throw errGetUser;
+        if(gotUser.rows.length < 1) {
+            return res.status(404).json({
+                error: 'Invalid email, retry your login'
+            });
+        }
+        pool.query(`SELECT * FROM transactions WHERE byuserid = $1 ORDER BY id DESC`, [gotUser.rows[0].id], (errGetTransactions, gotTransactions)=> {
+            if(errGetTransactions) throw errGetTransactions;
+            if(gotTransactions.rows.length < 1) {
+                return res.status(404).json({
+                    error: 'No transactions for this user'
+                });
+            }
+            res.status(200).json({
+                message: 'Your transactions',
+                transactions: gotTransactions.rows
+            });
+        });
+    });
+};
+
 module.exports = {
     createUser,
     loginUser,
     checkBalance,
     userDepositToAccount,
-    userWithdrawFromAccount
+    userWithdrawFromAccount,
+    userCheckTransactions
 };
