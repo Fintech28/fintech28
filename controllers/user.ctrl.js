@@ -273,6 +273,12 @@ const userCheckTransactions = (req, res) => {
     });
 };
 
+const userApplyForLoan = (req, res) => {
+    const {
+        amount
+    } = req.body;
+};
+
 module.exports = {
     createUser,
     loginUser,
