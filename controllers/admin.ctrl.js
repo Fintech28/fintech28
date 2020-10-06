@@ -61,18 +61,26 @@ const seeAllUsers = (req, res) => {
 const seeSingleUser = (req, res, next) => {
     const {
         userId
-    } = req.params;
+    } = req.params; // fetch from url
+
+    // check if user exists with given Id
     pool.query(`SELECT * FROM users WHERE id = $1`, [userId], (errGetUser, gotUser) => {
         if(errGetUser) throw errGetUser;
+
+        // if user does not yet exist, return error
         if(gotUser.rows.length < 1) {
             return res.status(404).json({
                 error: `User not found with id ${userId}`
             });
         }
+
+        // initialize variables with user properties we want to return
         const userEmail = gotUser.rows[0].email;
         const userPhone = gotUser.rows[0].phone;
         const userBalance = gotUser.rows[0].balance;
         const userStatus = gotUser.rows[0].isverified;
+
+        // return user properties for admin
         res.status(200).json({
             message: 'Fintech28 user',
             data: {
