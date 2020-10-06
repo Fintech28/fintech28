@@ -28,5 +28,7 @@ create table loans (
     default current_timestamp, 
     dueon timestamp default current_timestamp,
     isconfirmed boolean,
-    interestrate integer
+    interestrate integer,
+    totalrepaid integer,
+    isfullyrepaid boolean
 );
