@@ -141,6 +141,31 @@ const checkBalance = (req, res) => {
     });
 };
 
+const userDepositToAccount = (req, res) => {
+    const {
+        amount
+    } = req.body;
+    
+    // check for empty amount
+    if(!amount) {
+        return res.status(409).json({
+            error: 'Amount is required'
+        });
+    }
+
+    // check user data
+    pool.query(`SELECT * FROM users WHERE email  =$1`, [authedProp.email], (errGetLoggedUser, loggedUser) => {
+        if(errGetLoggedUser) throw errGetLoggedUser;
+        if(loggedUser.rows.length < 1) {
+            return res.status(404).json({
+                error: 'Invalid email, retry your login'
+            });
+        }
+
+        // save transaction then update user balance
+    });
+};
+
 module.exports = {
     createUser,
     loginUser,
