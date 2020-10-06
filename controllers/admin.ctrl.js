@@ -27,6 +27,38 @@ const verifyUser = (req, res) => {
     });
 };
 
+const seeAllUsers = (req, res) => {
+
+    // select all users from database in order of id in descending manner
+    pool.query(`SELECT * FROM users ORDER BY id DESC`, (errFetchUsers, allUsers) => {
+        if(errFetchUsers) throw errFetchUsers;
+
+        // initialize arrays for properties we want to see (hide password properties froom admin)
+        let userEmails = [], userPhones = [], userBalances = [], userStatuses = [];
+
+        // push user properties to previously initialized arrays
+        allUsers.rows.forEach((user) => {
+            console.log(user);
+            userEmails.push(user.email);
+            userPhones.push(user.phone);
+            userBalances.push(user.balance);
+            userStatuses.push(user.isverified);
+        });
+
+        // return data with populated arrays (these are in descending order of Id)
+        res.status(200).json({
+            message: 'Finteh28 users',
+            data: {
+                userEmails: userEmails,
+                userPhones: userPhones,
+                userBalances: userBalances,
+                userStatuses: userStatuses
+            }
+        });
+    });
+};
+
 module.exports = {
-    verifyUser
+    verifyUser,
+    seeAllUsers
 }
