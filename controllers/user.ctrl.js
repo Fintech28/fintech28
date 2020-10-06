@@ -72,6 +72,50 @@ const createUser = (req, res) => {
     });
 };
 
+const loginUser = (req, res) => {
+    const {
+        email, password
+    } = req.body;
+
+    // check empty fields
+    if(!email) {
+        return res.status(409).json({
+            error: 'Email is required'
+        });
+    }
+    if(!password) {
+        return res.status(409).json({
+            error: 'Password is required'
+        });
+    }
+    // end empty fields check
+
+    // check if user exists in database
+    pool.query(`SELECT * FROM users WHERE email = $1`, [email], (errGetUser, gotUser) => {
+        if(errGetUser) throw errGetUser;
+
+        // if no user exists, return error
+        if(gotUser.rows.length < 1) {
+            return res.status(404).json({
+                error: 'User does not exist'
+            });
+        }
+
+        // create token
+        const token = jwt.sign({
+            email: email,
+        }, process.env.secret_key);
+        res.status(200).json({
+            message: 'Log in successful',
+            data: {
+                email: gotUser.rows[0].email,
+                token: token
+            }
+        });
+    });
+};
+
 module.exports = {
-    createUser
+    createUser,
+    loginUser
 };
