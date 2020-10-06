@@ -6,6 +6,10 @@ const jwt = require('jsonwebtoken');
 
 const dotenv = require('dotenv');
 
+const authedUser = require('./authUser');
+
+const authedProp = authedUser.user;
+
 const createUser = (req, res) => {
     const {
         name, email, phone, password
@@ -116,10 +120,14 @@ const loginUser = (req, res) => {
 };
 
 const checkBalance = (req, res) => {
-    
+    res.status(200).json({
+        message: 'Checking for logged in user...',
+        user: authedProp
+    });
 };
 
 module.exports = {
     createUser,
-    loginUser
+    loginUser,
+    checkBalance
 };
