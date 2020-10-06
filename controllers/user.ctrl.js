@@ -115,6 +115,10 @@ const loginUser = (req, res) => {
     });
 };
 
+const checkBalance = (req, res) => {
+    
+};
+
 module.exports = {
     createUser,
     loginUser
