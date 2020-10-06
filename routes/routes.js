@@ -13,5 +13,7 @@ router.post('/api/v1/auth/login-user', userCtrl.loginUser);
 router.patch('/api/v1/admin/verify-user/userId=:userId', adminCtrl.verifyUser);
 // admin see all users
 router.get('/api/v1/admin/users', adminCtrl.seeAllUsers);
+// admin see single users
+router.get('/api/v1/admin/users/userId=:userId', adminCtrl.seeSingleUser);
 
 module.exports = router;
