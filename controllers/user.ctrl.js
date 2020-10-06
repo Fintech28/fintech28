@@ -277,6 +277,44 @@ const userApplyForLoan = (req, res) => {
     const {
         amount
     } = req.body;
+
+    // check if amount is empty
+    if(!amount) {
+        return res.status(409).json({
+            error: 'Amount is required'
+        });
+    }
+    pool.query(`SELECT * FROM users WHERE email = $1`, [authedProp.email], (errGetLoggedUser, loggedUser) => {
+        if(errGetLoggedUser) throw errGetLoggedUser;
+        if(loggedUser.rows.length < 1) {
+            return res.status(404).json({
+                error: 'Invalid email, retry your login'
+            });
+        }
+
+        // we will use interest rate at 5% P.A just for example in our API. This can be changed later;
+        const interestRate = 5;
+
+        /*
+        we will also initialize repayment period to one year for all loans below 100,000
+        100,000 is also the minimum amount a user can borrow at a time.
+
+        Specifications can be changed here in later refactorings
+        */
+       const maxAmount = 100000;
+       const toRepayAfter = 12; // months
+
+       // formula to calculate total interest to be reapid is PRINCIPAL * RATE * TIME
+       // Principal is initialized to amount entered by user
+       // check that amount is less than 100000
+       if(parseInt(amount) > parseint(maxAmount)) {
+           return res.status(409).json({
+            error: 'Amount must not be more than 100,000'
+           });
+       }
+       const interestAccumulated = parseint(amount) * parseint(interestRate / 100) * parseInt(toRepayAfter);
+       const totalToRepay = parseInt(interestAccumulated) + parseint(amount);
+    });
 };
 
 module.exports = {
