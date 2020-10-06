@@ -6,9 +6,9 @@ const jwt = require('jsonwebtoken');
 
 const dotenv = require('dotenv');
 
-const authedUser = require('./authUser');
+const authedUser = require('./authUser'); // jwt auth function
 
-const authedProp = authedUser.user;
+const authedProp = authedUser.user; // token email from jwt auth
 
 const createUser = (req, res) => {
     const {
@@ -289,6 +289,13 @@ const userApplyForLoan = (req, res) => {
         if(loggedUser.rows.length < 1) {
             return res.status(404).json({
                 error: 'Invalid email, retry your login'
+            });
+        }
+
+        // check if user's account is verified by admin, otherwise prevent loan application
+        if(loggedUser.rows[0].isverified === false) {
+            return res.status(403).json({
+                error: 'Your account is not yet verified by an admin'
             });
         }
 
