@@ -18,3 +18,15 @@
      datetime timestamp
      default current_timestam
 );
+
+-- loans table
+create table loans (
+    id serial primary key,
+    byuserid integer,
+    amount integer,
+    senton timestamp
+    default current_timestamp, 
+    dueon timestamp default current_timestamp,
+    isconfirmed boolean,
+    interestrate integer
+);
