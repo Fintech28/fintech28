@@ -327,9 +327,9 @@ const userApplyForLoan = (req, res) => {
        const toPayBy = '2021-10-15'
        pool.query(`
        INSERT INTO loans 
-       (byuserid, amount, isconfirmed, interestrate, totalrepaid, isfullyrepaid, monthsleft, dueon)
+       (byuserid, amount, isconfirmed, interestrate, totalrepaid, isfullyrepaid, monthsleft, dueon, totaltorepay)
        VALUES
-       ($1, $2, $3, $4, $5, $6, $7, $8)`, [loggedUser.rows[0].id, amount, false, interestRate, 0, false, 12, toPayBy], (errAddLoanReq, loanReq) => {
+       ($1, $2, $3, $4, $5, $6, $7, $8, $9)`, [loggedUser.rows[0].id, amount, false, interestRate, 0, false, 12, toPayBy, totalToRepay], (errAddLoanReq, loanReq) => {
            if(errAddLoanReq) throw errAddLoanReq;
            res.status(201).json({
                message: 'Application received',
@@ -343,6 +343,120 @@ const userApplyForLoan = (req, res) => {
     });
 };
 
+const userRepayLoan = (req, res) => {
+    const {
+        loanId
+    } = req.params; // the id of the loan
+    const {
+        amount
+    } = req.body; // amount being repaid
+    if(!amount) {
+        return res.status(409).json({
+            error: 'Amount is required'
+        });
+    }
+    pool.query(`SELECT * FROM users WHERE email = $1`, [authedProp.email], (errGetUser, gotUser) => {
+        if(errGetUser) throw errGetUser;
+        if(gotUser.rows.length < 1) {
+            return res.status(404).json({
+                error: 'Invalid email, retry your login'
+            });
+        }
+
+        // check if loan exists with given id
+        pool.query(`SELECT * FROM loans WHERE id = $1 AND byuserid = $2`, [loanId, gotUser.rows[0].id], (errGetLoan, gotloan) => {
+            if(errGetLoan) throw errGetLoan;
+            if(gotloan.rows.length < 1) {
+                return res.status(404).json({
+                    error: 'Loan not found, confirm Id'
+                });
+            }
+            // calc
+            if(gotloan.rows[0].isfullyrepaid === true) {
+                return res.status(403).json({
+                    error: 'Loan already fully paid'
+                });
+            }
+            // calculate remaining balance after payment is successful
+            const remainingBalance = parseInt(gotloan.rows[0].totaltorepay) - parseInt(amount);
+            
+            if(parseInt(remainingBalance) <= 0) {
+                return res.status(409).json({
+                    error: 'Balance cannot be less than zero'
+                });
+            }
+            // calc
+
+            // update loans table
+            pool.query(`UPDATE loans SET totaltorepay = $1 WHERE id = $2`, [remainingBalance, loanId], (errUpdatePaidStatus, updatedPaidStatus) => {
+                if(errUpdatePaidStatus) throw errUpdatePaidStatus;
+                if(remainingBalance === 0) {
+                    pool.query(`UPDATE loans SET isfullyrepaid = $1 WHERE id = $2`, [true, loanId], (errUpdateFullRepaid, updateFullRepaid) => {
+                        if(errUpdateFullRepaid) throw errUpdateFullRepaid;
+
+                        // update user balance
+                        const newUserBalance = parseInt(gotUser.rows[0].balance) - parseInt(amount);
+                        pool.query(`UPDATE users SET balance = $1 WHERE id = $2`, [newUserBalance, gotUser.rows[0].id], (errUpdateUserBal, updatedUserBal) => {
+                            if(errUpdateUserBal) throw errUpdateUserBal;
+                            return res.status(201).json({
+                                message: `Repaid loan. Your balance is ${remainingBalance}`,
+                                data: {
+                                    email: gotUser.rows[0].email,
+                                    toBePaidby: gotloan.rows[0].dueon,
+                                    remainingBalance: remainingBalance
+                                }
+                            });
+                        });
+                    });
+                }
+                // update user balance
+                const newUserBalance = parseInt(gotUser.rows[0].balance) - parseInt(amount);
+                pool.query(`UPDATE users SET balance = $1 WHERE id = $2`, [newUserBalance, gotUser.rows[0].id], (errUpdateUserBal, updatedUserBal) => {
+                    if(errUpdateUserBal) throw errUpdateUserBal;
+                    res.status(201).json({
+                        message: `Repaid loan. Your balance is ${remainingBalance}`,
+                        data: {
+                            email: gotUser.rows[0].email,
+                            toBePaidby: gotloan.rows[0].dueon,
+                            remainingBalance: remainingBalance
+                        }
+                    });
+                });
+            });
+        });
+    });
+};
+
+const userSeeSpecificLoan = (req, res) => {
+    const {
+        loanId
+    } = req.params;
+
+    pool.query(`SELECT * FROM users WHERE email = $1`, [authedProp.email], (errGetUser, gotUser) => {
+        if(errGetUser) throw errGetUser;
+        if(gotUser.rows.length < 1) {
+            return res.status(404).json({
+                error: 'Invalid email, retry your login'
+            });
+        }
+
+        // check if loan exists with given id
+        pool.query(`SELECT * FROM loans WHERE id = $1 AND byuserid = $2`, [loanId, gotUser.rows[0].id], (errGetLoan, gotloan) => {
+            if(errGetLoan) throw errGetLoan;
+            if(gotloan.rows.length < 1) {
+                return res.status(404).json({
+                    error: `Loan not found with id ${loanId}`
+                });
+            }
+            // else loan is found
+            res.status(200).json({
+                message: `Loan ${loanId} data`,
+                data: gotloan.rows[0]
+            });
+        });
+    });
+};
+
 module.exports = {
     createUser,
     loginUser,
@@ -350,5 +464,7 @@ module.exports = {
     userDepositToAccount,
     userWithdrawFromAccount,
     userCheckTransactions,
-    userApplyForLoan
+    userApplyForLoan,
+    userRepayLoan,
+    userSeeSpecificLoan
 };

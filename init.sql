@@ -31,4 +31,5 @@ create table loans (
     isfullyrepaid boolean,
     monthsleft integer,
     dueon varchar(100),
+    totaltorepay integer
 );
