@@ -457,6 +457,29 @@ const userSeeSpecificLoan = (req, res) => {
     });
 };
 
+const userSeeAllLoans = (req, res, next) => {
+    pool.query(`SELECT * FROM users WHERE email = $1`, [authedProp.email], (errGetUser, gotUser) => {
+        if(errGetUser) throw errGetUser;
+        if(gotUser.rows.length < 1) {
+            return res.status(404).json({
+                error: 'Invalid email, retry your login'
+            });
+        }
+        pool.query(`SELECT * FROM loans WHERE byuserid = $1`, [gotUser.rows[0].id], (errGetLoans, gotLoans) => {
+            if(errGetLoans) throw errGetLoans;
+            if(gotLoans.rows.length < 1) {
+                return res.status(404).json({
+                    error: 'No loan logs for this user'
+                });
+            }
+            res.status(200).json({
+                message: `Loans for user ${gotUser.rows[0].id}`,
+                data: gotLoans.rows
+            });
+        });
+    });
+};
+
 module.exports = {
     createUser,
     loginUser,
@@ -466,5 +489,6 @@ module.exports = {
     userCheckTransactions,
     userApplyForLoan,
     userRepayLoan,
-    userSeeSpecificLoan
+    userSeeSpecificLoan,
+    userSeeAllLoans
 };
