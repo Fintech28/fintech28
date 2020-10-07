@@ -1,9 +1,21 @@
 const { pool } = require ('../config');
 
+const inputChecker = require('../checkers/input.check');
+
 const verifyUser = (req, res) => {
     const {
         userId
     } = req.params; // passed as prameter in URL eg 'https://fintech28.com/admin/verifyuser/userId=4', here 4 is the userId
+
+    // check valid input format
+    const isValidUserId = inputChecker.checkInputIsNumber(userId);
+
+    if(!isValidUserId) {
+        return res.status(409).json({
+            error: 'User id must be a number'
+        });
+    }
+    // end valid input check
 
     // check if user exists with given ID
     pool.query(`SELECT * FROM users WHERE id = $1`, [userId], (errGetUser, gotUser) => {
@@ -62,6 +74,16 @@ const seeSingleUser = (req, res, next) => {
     const {
         userId
     } = req.params; // fetch from url
+    
+    // check valid input format
+    const isValidUserId = inputChecker.checkInputIsNumber(userId);
+
+    if(!isValidUserId) {
+        return res.status(409).json({
+            error: 'User id must be a number'
+        });
+    }
+    // end valid input check
 
     // check if user exists with given Id
     pool.query(`SELECT * FROM users WHERE id = $1`, [userId], (errGetUser, gotUser) => {
@@ -97,6 +119,16 @@ const reviewLoanApplication = (req, res) => {
     const {
         loanApplicationId
     } = req.params;
+    
+    // check valid input format
+    const isValidloanApplicationId = inputChecker.checkInputIsNumber(loanApplicationId);
+
+    if(!isValidloanApplicationId) {
+        return res.status(409).json({
+            error: 'Loan id must be a number'
+        });
+    }
+    // end valid input check
     
     // check if loan exists with given id
     pool.query(`SELECT * FROM loans WHERE id = $1`, [loanApplicationId], (errgetLoanApplication, loanApplication) => {

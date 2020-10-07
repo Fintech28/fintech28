@@ -10,6 +10,8 @@ const authedUser = require('./authUser'); // jwt auth function
 
 const authedProp = authedUser.user; // token email from jwt auth
 
+const inputChecker = require('../checkers/input.check');
+
 const createUser = (req, res) => {
     const {
         name, email, phone, password
@@ -36,6 +38,33 @@ const createUser = (req, res) => {
         });
     }
     // end empty fields check
+
+    // check valid input format
+    if(!phone.split('+')[1]) {
+        return res.status(409).json({
+            error: 'Invalid phone syntax'
+        });
+    }
+    const isValidName = inputChecker.checkInputIsString(name);
+    const isValidPhone = inputChecker.checkInputIsNumber(phone.split('+')[1]);
+    const isValidEmail = inputChecker.checkInputIsValidEmail(email);
+
+    if(!isValidName) {
+        return res.status(409).json({
+            error: 'Invalid name syntax'
+        });
+    }
+    if(!isValidPhone) {
+        return res.status(409).json({
+            error: 'Invalid phone syntax'
+        });
+    }
+    if(!isValidEmail) {
+        return res.status(409).json({
+            error: 'Invalid email syntax'
+        });
+    }
+    // end valid input check
 
     // check if user already exists with email or phone
     pool.query(`SELECT * FROM users WHERE email = $1 OR phone = $2`, [email, phone], (errCheckUser, foundMatch) => {
@@ -93,6 +122,17 @@ const loginUser = (req, res) => {
         });
     }
     // end empty fields check
+    
+
+    // check valid input format
+    const isValidEmail = inputChecker.checkInputIsValidEmail(email);
+
+    if(!isValidEmail) {
+        return res.status(409).json({
+            error: 'Invalid email syntax'
+        });
+    }
+    // end valid input check
 
     // check if user exists in database
     pool.query(`SELECT * FROM users WHERE email = $1`, [email], (errGetUser, gotUser) => {
@@ -152,6 +192,17 @@ const userDepositToAccount = (req, res) => {
             error: 'Amount is required'
         });
     }
+    
+
+    // check valid input format
+    const isValidAmount = inputChecker.checkInputIsNumber(amount);
+
+    if(!isValidAmount) {
+        return res.status(409).json({
+            error: 'Amount must be a number'
+        });
+    }
+    // end valid input check
 
     // check user data
     pool.query(`SELECT * FROM users WHERE email  =$1`, [authedProp.email], (errGetLoggedUser, loggedUser) => {
@@ -204,6 +255,16 @@ const userWithdrawFromAccount = (req, res) => {
             error: 'Amount is required'
         });
     }
+    
+    // check valid input format
+    const isValidAmount = inputChecker.checkInputIsNumber(amount);
+
+    if(!isValidAmount) {
+        return res.status(409).json({
+            error: 'Amount must be a number'
+        });
+    }
+    // end valid input check
 
     // check user data
     pool.query(`SELECT * FROM users WHERE email  =$1`, [authedProp.email], (errGetLoggedUser, loggedUser) => {
@@ -284,6 +345,17 @@ const userApplyForLoan = (req, res) => {
             error: 'Amount is required'
         });
     }
+    
+    // check valid input format
+    const isValidAmount = inputChecker.checkInputIsNumber(amount);
+
+    if(!isValidAmount) {
+        return res.status(409).json({
+            error: 'Amount must be a number'
+        });
+    }
+    // end valid input check
+    
     pool.query(`SELECT * FROM users WHERE email = $1`, [authedProp.email], (errGetLoggedUser, loggedUser) => {
         if(errGetLoggedUser) throw errGetLoggedUser;
         if(loggedUser.rows.length < 1) {
@@ -350,11 +422,29 @@ const userRepayLoan = (req, res) => {
     const {
         amount
     } = req.body; // amount being repaid
+
     if(!amount) {
         return res.status(409).json({
             error: 'Amount is required'
         });
     }
+    
+    // check valid input format
+    const isValidloanId = inputChecker.checkInputIsNumber(loanId);
+    const isValidAmount = inputChecker.checkInputIsNumber(amount);
+
+    if(!isValidAmount) {
+        return res.status(409).json({
+            error: 'Amount must be a number'
+        });
+    }
+    if(!isValidloanId) {
+        return res.status(409).json({
+            error: 'Loan id must be a number'
+        });
+    }
+    // end valid input check
+
     pool.query(`SELECT * FROM users WHERE email = $1`, [authedProp.email], (errGetUser, gotUser) => {
         if(errGetUser) throw errGetUser;
         if(gotUser.rows.length < 1) {
@@ -431,6 +521,16 @@ const userSeeSpecificLoan = (req, res) => {
     const {
         loanId
     } = req.params;
+    
+    // check valid input format
+    const isValidloanId = inputChecker.checkInputIsNumber(loanId);
+
+    if(!isValidloanId) {
+        return res.status(409).json({
+            error: 'Loan id must be a number'
+        });
+    }
+    // end valid input check
 
     pool.query(`SELECT * FROM users WHERE email = $1`, [authedProp.email], (errGetUser, gotUser) => {
         if(errGetUser) throw errGetUser;
