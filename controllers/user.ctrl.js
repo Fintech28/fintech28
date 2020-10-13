@@ -70,7 +70,7 @@ const createUser = (req, res) => {
     pool.query(`SELECT * FROM users WHERE email = $1 OR phone = $2`, [email, phone], (errCheckUser, foundMatch) => {
         if(errCheckUser) throw errCheckUser;
         if(foundMatch.rows.length > 0) {
-            return res.status(409).json({
+            return res.status(403).json({
                 error: 'Email or phone already exists'
             });
         }
@@ -90,7 +90,7 @@ const createUser = (req, res) => {
                 }, process.env.secret_key);
 
                 // return success message
-                res.status(200).json({
+                res.status(201).json({
                     message: 'User sign up successful',
                     data: {
                         name: name,
@@ -145,17 +145,28 @@ const loginUser = (req, res) => {
             });
         }
 
-        // create token
-        const token = jwt.sign({
-            email: email,
-        }, process.env.secret_key);
-        res.status(200).json({
-            message: 'Log in successful',
-            data: {
-                email: gotUser.rows[0].email,
-                token: token
+        bcrypt.compare(password, gotUser.rows[0].password, (errCheckPassword, passwordCheck) => {
+            if(errCheckPassword) throw errCheckPassword;
+
+            if(!passwordCheck) {
+                return res.status(409).json({
+                    error: 'Invalid password'
+                });
             }
+            
+            // create token
+            const token = jwt.sign({
+                email: email,
+            }, process.env.secret_key);
+            res.status(200).json({
+                message: 'Log in successful',
+                data: {
+                    email: gotUser.rows[0].email,
+                    token: token
+                }
+            });
         });
+
     });
 };
 
@@ -355,7 +366,7 @@ const userApplyForLoan = (req, res) => {
         });
     }
     // end valid input check
-    
+
     pool.query(`SELECT * FROM users WHERE email = $1`, [authedProp.email], (errGetLoggedUser, loggedUser) => {
         if(errGetLoggedUser) throw errGetLoggedUser;
         if(loggedUser.rows.length < 1) {
@@ -461,7 +472,7 @@ const userRepayLoan = (req, res) => {
                     error: 'Loan not found, confirm Id'
                 });
             }
-            // calc
+            
             if(gotloan.rows[0].isfullyrepaid === true) {
                 return res.status(403).json({
                     error: 'Loan already fully paid'
@@ -475,7 +486,6 @@ const userRepayLoan = (req, res) => {
                     error: 'Balance cannot be less than zero'
                 });
             }
-            // calc
 
             // update loans table
             pool.query(`UPDATE loans SET totaltorepay = $1 WHERE id = $2`, [remainingBalance, loanId], (errUpdatePaidStatus, updatedPaidStatus) => {

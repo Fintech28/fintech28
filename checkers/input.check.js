@@ -1,6 +1,6 @@
 const stringChecker = /^[A-Za-z ]+$/;
 const numberChecker = /^\d+$/;
-const emailChecker = /^[A-Za-z0-9. !#$%&'*+/=?^_`{|}~-]+@[A-Za-z0-9-]+(?:\/[A-Za-z0-9-]+)*$/;
+const emailChecker = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
 
 const checkInputIsString = (input) => {
     if(!input.match(stringChecker)) return false;

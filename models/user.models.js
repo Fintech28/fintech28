@@ -13,8 +13,22 @@ const userModel = {
     },
     userThree: {
         name: 'Claud Watari',
+        email: 'claud@mail.com',
+        phone: '+254 705 724562',
+        password: 'mypassword'
+    },
+    userFour: {
+        name: 'Claud Watari',
         email: 'claudwatari95@gmail.com',
-        phone: '+254705724562',
+        phone: '+254700111222',
+        password: 'mypassword'
+    },
+    userFive: {
+        email: '',
+        password: ''
+    },
+    userSix: {
+        email: 'claud@mail.com',
         password: 'mypassword'
     }
 };

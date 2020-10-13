@@ -10,7 +10,7 @@ app.use(bodyParser.urlencoded({
 app.use(router);
 
 app.listen(process.env.PORT || 4000, () => {
-    console.log('Litening on port 4000');
+    console.log('Fintech28 server is running...');
 });
 
 module.exports = app;
