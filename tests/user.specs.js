@@ -75,7 +75,6 @@ beforeEach('before tests', (done) => {
         if(er) throw er;
 
         if(result.rows.length < 1) console.log('No user from test db found with that email')
-        else console.log(result.rows[0]);
       });
   token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImNsYXVkQG1haWwuY29tIiwiaWF0IjoxNjAyODUyMDQ4fQ.tY8z2FEBPlYS8hKb9j8Dz24ZtI96B4IFgHEP4p_m0BI';
   done();
