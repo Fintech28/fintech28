@@ -14,6 +14,38 @@ const expect = chai.expect;
 var token = '';
 
 beforeEach('before tests', (done) => {
+  pool.query(` create table if not exists users (
+    id serial primary key,
+    name varchar(100),
+    email varchar(100),
+    phone varchar(50),
+    password varchar(255),
+    isverified boolean,
+    balance integer
+    );
+    create table if not exists transactions (
+      id serial primary key,
+      byuserid integer,
+      transactiontype varchar(50),
+      amount integer,
+      datetime timestamp
+      default current_timestamp
+    );
+    create table loans (
+      id serial primary key,
+      byuserid integer,
+      amount integer,
+      senton timestamp default current_timestamp,
+      isconfirmed boolean,
+      interestrate integer,
+      totalrepaid integer,
+      isfullyrepaid boolean,
+      monthsleft integer,
+      dueon varchar(100),
+      totaltorepay integer
+    );
+    `
+  )
   token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImNsYXVkQG1haWwuY29tIiwiaWF0IjoxNjAyODUyMDQ4fQ.tY8z2FEBPlYS8hKb9j8Dz24ZtI96B4IFgHEP4p_m0BI';
   done();
 });
