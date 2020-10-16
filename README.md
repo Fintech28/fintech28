@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/Fintech28/fintech28.svg?branch=main)](https://travis-ci.org/Fintech28/fintech28)
+[![Build Status](https://travis-ci.org/Fintech28/fintech28.svg?branch=checkers)](https://travis-ci.org/Fintech28/fintech28)
 
 Community project for GADS2020.
 
