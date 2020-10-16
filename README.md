@@ -6,7 +6,7 @@ Community project for GADS2020.
 
 Written in nodejs/express.
 
-Implements unit testing (still buggy)
+Implements unit testing, and continous integration (buggy).
 
 Postgreql database
 
