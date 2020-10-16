@@ -59,16 +59,6 @@ afterEach('after all tests', (done) => {
 });
 
 describe('create user', () => {
-
-  before('after all tests', (done) => {
-    pool.query(`DELETE FROM users WHERE email = $1`, [userModel.userFour.email], (err, re) => {
-      if(err) throw err;
-    });
-    pool.query(`UPDATE loans SET totaltorepay = 100 WHERE id = 2`, (err, re) => {
-      if(err) throw err;
-    });
-    done();
-  });
     
     it('should check name is available', (done) => {
       chai.request(server)
@@ -158,6 +148,7 @@ describe('create user', () => {
       .send(userModel.userThree)
       .end((err, res) => {
         if(err) return done(err);
+        console.log(res.body);
         expect(res.status).to.equal(403);
         expect(res).to.be.a('object');
         done();
@@ -170,6 +161,7 @@ describe('create user', () => {
         .send(userModel.userFour)
         .end((err, res) => {
             if(err) return done(err);
+            console.log(res.body);
             expect(res.status).to.equal(201);
             expect(res).to.be.a('object');
             done();
