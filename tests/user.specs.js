@@ -1,6 +1,6 @@
-// const chai = require('chai');
+const chai = require('chai');
 
-// const chaiHttp = require('chai-http');
+const chaiHttp = require('chai-http');
 
 // const userModel = require('../models/user.models');
 
@@ -8,8 +8,8 @@
 
 // const { pool } = require('../config');
 
-// chai.use(chaiHttp);
-// const expect = chai.expect;
+chai.use(chaiHttp);
+const expect = chai.expect;
 
 // var token = '';
 
