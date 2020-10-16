@@ -16,7 +16,7 @@
      transactiontype varchar(50),
      amount integer,
      datetime timestamp
-     default current_timestam
+     default current_timestamp
 );
 
 -- loans table
