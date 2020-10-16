@@ -14,7 +14,7 @@ const expect = chai.expect;
 var token = '';
 
 beforeEach('before tests', (done) => {
-  pool.query(` create table if not exists users (
+  pool.query(`create table if not exists users (
     id serial primary key,
     name varchar(100),
     email varchar(100),
@@ -22,29 +22,31 @@ beforeEach('before tests', (done) => {
     password varchar(255),
     isverified boolean,
     balance integer
-    );
-    create table if not exists transactions (
-      id serial primary key,
-      byuserid integer,
-      transactiontype varchar(50),
-      amount integer,
-      datetime timestamp
-      default current_timestamp
-    );
-    create table if not exists loans (
-      id serial primary key,
-      byuserid integer,
-      amount integer,
-      senton timestamp default current_timestamp,
-      isconfirmed boolean,
-      interestrate integer,
-      totalrepaid integer,
-      isfullyrepaid boolean,
-      monthsleft integer,
-      dueon varchar(100),
-      totaltorepay integer
     );`
    );
+   pool.query(`
+   create table if not exists transactions (
+     id serial primary key,
+     byuserid integer,
+     transactiontype varchar(50),
+     amount integer,
+     datetime timestamp
+     default current_timestamp
+   );`);
+   pool.query(`
+   create table if not exists loans (
+     id serial primary key,
+     byuserid integer,
+     amount integer,
+     senton timestamp default current_timestamp,
+     isconfirmed boolean,
+     interestrate integer,
+     totalrepaid integer,
+     isfullyrepaid boolean,
+     monthsleft integer,
+     dueon varchar(100),
+     totaltorepay integer
+   );`);
    pool.query(`
     INSERT INTO users
     (name, email, phone, password, isverified, balance)
@@ -69,7 +71,7 @@ beforeEach('before tests', (done) => {
         byuserid, transactiontype, amount)
       VALUES ($1, $2, $3)
       `, [1, 'Deposit', 100]);
-      pool.query(`SELECT * FROM users WHERE email = $1`, [userModel.userNine.email], (er, result) => {
+      pool.query(`SELECT * FROM users WHERE email = $1`, ['claud@mail.com'], (er, result) => {
         if(er) throw er;
 
         if(result.rows.length < 1) console.log('No user from test db found with that email')
