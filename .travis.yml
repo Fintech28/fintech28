@@ -1,9 +1,7 @@
 language: node_js
+
 node_js:
   - '10'
-
-before_install:
-    - npm i -g npm@6.9.0
 
 notifications:
   email: false
@@ -14,9 +12,6 @@ services:
 before_script:
   - npm install
   - psql -c 'create database fintech28;' -U postgres
-  - psql -c 'create table users (id serial primary key, name varchar(100), email varchar(100), phone varchar(50), password varchar(255), isverified boolean, balance integer);' -U postgres
-  - psql -c 'create table transactions (id serial primary key, byuserid integer, transactiontype varchar(50), amount integer, datetime timestamp default current_timestamp);' -U postgres
-  - psql -c 'create table loans (id serial primary key, byuserid integer, amount integer, senton timestamp default current_timestamp, isconfirmed boolean, interestrate integer, totalrepaid integer, isfullyrepaid boolean, monthsleft integer, dueon varchar(100), totaltorepay integer);' -U postgres
 
 script:
   - npm run test
