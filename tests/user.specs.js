@@ -43,25 +43,25 @@ beforeEach('before tests', (done) => {
       monthsleft integer,
       dueon varchar(100),
       totaltorepay integer
-    );
+    );`
+   );
+   pool.query(`
     INSERT INTO users
     (name, email, phone, password, isverified, balance)
     VALUES
     ($1, $2, $3, $4, $5, $6)
-
-    `, ['Claud Watari', 
-        ' claud@mail.com', '+254705724562', 
-        '$2b$12$oqXZYn0zkQObNiCXT4TiQ.MSCnGkrVZljPk0pyCPf9PTfns4SRltq', true, 50000
-      ]
-   );
+   `, ['Claud Watari', 
+   ' claud@mail.com', '+254705724562', 
+   '$2b$12$oqXZYn0zkQObNiCXT4TiQ.MSCnGkrVZljPk0pyCPf9PTfns4SRltq', true, 50000
+    ]);
    pool.query(`
     INSERT INTO loans (
-      byuserid, amount, isconfirmed, interestrate, totalrepaid, isfullyrepaid, monhsleft, dueon, totaltorepay)
+      byuserid, amount, isconfirmed, interestrate, totalrepaid, isfullyrepaid, monthsleft, dueon, totaltorepay)
     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
     `, [1, 1000, false, 5, 0 ,false, 12, '2021-10-15', 16000,]);
     pool.query(`
      INSERT INTO loans (
-       byuserid, amount, isconfirmed, interestrate, totalrepaid, isfullyrepaid, monhsleft, dueon, totaltorepay)
+       byuserid, amount, isconfirmed, interestrate, totalrepaid, isfullyrepaid, monthsleft, dueon, totaltorepay)
      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
      `, [1, 1000, false, 5, 0 ,false, 12, '2021-10-15', 16000,]);
      pool.query(`
