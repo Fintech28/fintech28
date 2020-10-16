@@ -99,7 +99,7 @@ describe('tests', () => {
   
   describe('create user', () => {
       
-    it('should check name is available', (done) => {
+  xit('should check name is available', (done) => {
       chai.request(server)
       .post('/api/v1/auth/create-user')
       .send(userModel.userOne1)
@@ -187,7 +187,7 @@ describe('tests', () => {
       });
     });
 
-    it('should check if user already exists', (done) => {
+    xit('should check if user already exists', (done) => {
       chai.request(server)
       .post('/api/v1/auth/create-user')
       .send(userModel.userThree)
