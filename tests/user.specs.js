@@ -31,7 +31,7 @@ beforeEach('before tests', (done) => {
       datetime timestamp
       default current_timestamp
     );
-    create table loans (
+    create table if not exists loans (
       id serial primary key,
       byuserid integer,
       amount integer,
