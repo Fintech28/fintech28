@@ -13,84 +13,92 @@ const expect = chai.expect;
 
 var token = '';
 
-before('before tests', (done) => {
-  pool.query(`create table if not exists users (
-    id serial primary key,
-    name varchar(100),
-    email varchar(100),
-    phone varchar(50),
-    password varchar(255),
-    isverified boolean,
-    balance integer
-    );`
-   );
-   pool.query(`
-   create table if not exists transactions (
-     id serial primary key,
-     byuserid integer,
-     transactiontype varchar(50),
-     amount integer,
-     datetime timestamp
-     default current_timestamp
-   );`);
-   pool.query(`
-   create table if not exists loans (
-     id serial primary key,
-     byuserid integer,
-     amount integer,
-     senton timestamp default current_timestamp,
-     isconfirmed boolean,
-     interestrate integer,
-     totalrepaid integer,
-     isfullyrepaid boolean,
-     monthsleft integer,
-     dueon varchar(100),
-     totaltorepay integer
-   );`);
-   pool.query(`
-    INSERT INTO users
-    (name, email, phone, password, isverified, balance)
-    VALUES
-    ($1, $2, $3, $4, $5, $6)
-   `, ['Claud Watari', 
-   'claud@mail.com', '+254705724562', 
-   '$2b$12$oqXZYn0zkQObNiCXT4TiQ.MSCnGkrVZljPk0pyCPf9PTfns4SRltq', true, 50000
-    ]);
-   pool.query(`
-    INSERT INTO loans (
-      byuserid, amount, isconfirmed, interestrate, totalrepaid, isfullyrepaid, monthsleft, dueon, totaltorepay)
-    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
-    `, [1, 1000, false, 5, 0 ,false, 12, '2021-10-15', 16000,]);
-    pool.query(`
-     INSERT INTO loans (
-       byuserid, amount, isconfirmed, interestrate, totalrepaid, isfullyrepaid, monthsleft, dueon, totaltorepay)
-     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
-     `, [1, 1000, false, 5, 0 ,false, 12, '2021-10-15', 16000,]);
+describe('tests', () => {
+
+  before('before tests', (done) => {
+    pool.query(`create table if not exists users (
+      id serial primary key,
+      name varchar(100),
+      email varchar(100),
+      phone varchar(50),
+      password varchar(255),
+      isverified boolean,
+      balance integer
+      );`
+     );
      pool.query(`
-      INSERT INTO transactions (
-        byuserid, transactiontype, amount)
-      VALUES ($1, $2, $3)
-      `, [1, 'Deposit', 100]);
-      pool.query(`SELECT * FROM users WHERE email = $1`, ['claud@mail.com'], (er, result) => {
-        if(er) throw er;
-
-        if(result.rows.length < 1) console.log('No user from test db found with that email')
-        else console.log('user is id ',result.rows[0].id);
-      });
-  token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImNsYXVkQG1haWwuY29tIiwiaWF0IjoxNjAyODUyMDQ4fQ.tY8z2FEBPlYS8hKb9j8Dz24ZtI96B4IFgHEP4p_m0BI';
-  done();
-});
-
-after('after all tests', (done) => {
-  token = '';
-  pool.query(`DELETE FROM users WHERE email = $1`, ['claud@mail.com'], (err, re) => {
-    if(err) throw err;
+     create table if not exists transactions (
+       id serial primary key,
+       byuserid integer,
+       transactiontype varchar(50),
+       amount integer,
+       datetime timestamp
+       default current_timestamp
+     );`);
+     pool.query(`
+     create table if not exists loans (
+       id serial primary key,
+       byuserid integer,
+       amount integer,
+       senton timestamp default current_timestamp,
+       isconfirmed boolean,
+       interestrate integer,
+       totalrepaid integer,
+       isfullyrepaid boolean,
+       monthsleft integer,
+       dueon varchar(100),
+       totaltorepay integer
+     );`);
+     pool.query(`
+      INSERT INTO users
+      (name, email, phone, password, isverified, balance)
+      VALUES
+      ($1, $2, $3, $4, $5, $6)
+     `, ['Claud Watari', 
+     'claud@mail.com', '+254705724562', 
+     '$2b$12$oqXZYn0zkQObNiCXT4TiQ.MSCnGkrVZljPk0pyCPf9PTfns4SRltq', true, 50000
+      ]);
+     pool.query(`
+      INSERT INTO loans (
+        byuserid, amount, isconfirmed, interestrate, totalrepaid, isfullyrepaid, monthsleft, dueon, totaltorepay)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+      `, [1, 1000, false, 5, 0 ,false, 12, '2021-10-15', 16000,]);
+      pool.query(`
+       INSERT INTO loans (
+         byuserid, amount, isconfirmed, interestrate, totalrepaid, isfullyrepaid, monthsleft, dueon, totaltorepay)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+       `, [1, 1000, false, 5, 0 ,false, 12, '2021-10-15', 16000,]);
+       pool.query(`
+        INSERT INTO transactions (
+          byuserid, transactiontype, amount)
+        VALUES ($1, $2, $3)
+        `, [1, 'Deposit', 100]);
+        pool.query(`SELECT * FROM users WHERE email = $1`, ['claud@mail.com'], (er, result) => {
+          if(er) throw er;
+  
+          if(result.rows.length < 1) console.log('No user from test db found with that email')
+          else console.log('user is id ',result.rows[0].id);
+        });
+        pool.query(`SELECT * FROM loans WHERE byuserid = $1`, [1], (er, result) => {
+          if(er) throw er;
+  
+          if(result.rows.length < 1) console.log('No loan from test db found for that user')
+          else console.log('user is id for loan ',result.rows[0].byuserid);
+        });
+    token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImNsYXVkQG1haWwuY29tIiwiaWF0IjoxNjAyODUyMDQ4fQ.tY8z2FEBPlYS8hKb9j8Dz24ZtI96B4IFgHEP4p_m0BI';
+    done();
   });
-  done();
-});
-
-describe('create user', () => {
-    
+  
+  after('after all tests', (done) => {
+    token = '';
+    pool.query(`DELETE FROM users WHERE email = $1`, ['claud@mail.com'], (err, re) => {
+      if(err) throw err;
+    });
+    done();
+  });
+  
+  describe('create user', () => {
+      
     it('should check name is available', (done) => {
       chai.request(server)
       .post('/api/v1/auth/create-user')
@@ -197,9 +205,9 @@ describe('create user', () => {
       });
     });
 
-});
+  });
 
-describe('login user', () => {
+  describe('login user', () => {
 
     it('should check email is available', (done) => {
       chai.request(server)
@@ -261,9 +269,9 @@ describe('login user', () => {
       });
     });
 
-});
+  });
 
-describe('require valid token actions', (done) => {
+  describe('require valid token actions', (done) => {
           
     it('should check valid user token', (done) => {
       const token = '';
@@ -520,5 +528,7 @@ describe('require valid token actions', (done) => {
         done();
       });
     });
+
+  });
 
 });
