@@ -13,7 +13,7 @@ const expect = chai.expect;
 
 var token = '';
 
-beforeEach('before tests', (done) => {
+before('before tests', (done) => {
   pool.query(`create table if not exists users (
     id serial primary key,
     name varchar(100),
@@ -81,7 +81,7 @@ beforeEach('before tests', (done) => {
   done();
 });
 
-afterEach('after all tests', (done) => {
+after('after all tests', (done) => {
   token = '';
   pool.query(`DELETE FROM users WHERE email = $1`, ['claud@mail.com'], (err, re) => {
     if(err) throw err;
