@@ -79,11 +79,11 @@ describe('tests', () => {
           if(result.rows.length < 1) console.log('No user from test db found with that email')
           else console.log('user is id ',result.rows[0].id);
         });
-        pool.query(`SELECT * FROM loans WHERE byuserid = $1`, [1], (er, result) => {
+        pool.query(`SELECT * FROM loans`, [1], (er, result) => {
           if(er) throw er;
   
           if(result.rows.length < 1) console.log('No loan from test db found for that user')
-          else console.log('user is id for loan ',result.rows[0].byuserid);
+          else console.log('user is id for loan ',result.rows);
         });
     token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImNsYXVkQG1haWwuY29tIiwiaWF0IjoxNjAyODUyMDQ4fQ.tY8z2FEBPlYS8hKb9j8Dz24ZtI96B4IFgHEP4p_m0BI';
     done();
@@ -181,7 +181,7 @@ describe('tests', () => {
       });
     });
 
-    xit('should check if user already exists', (done) => {
+    it('should check if user already exists', (done) => {
       chai.request(server)
       .post('/api/v1/auth/create-user')
       .send(userModel.userThree)
@@ -316,7 +316,7 @@ describe('tests', () => {
       });
     });
           
-    xit('should allow user apply for loan after valid amount', (done) => {
+    it('should allow user apply for loan after valid amount', (done) => {
       chai.request(server)
       .post('/api/v1/loan-application')
       .set('authorization', token)
@@ -463,7 +463,7 @@ describe('tests', () => {
       });
     });
           
-    xit('should allow user repay loan after valid amount', (done) => {
+    it('should allow user repay loan after valid amount', (done) => {
       chai.request(server)
       .patch('/api/v1/repay-loan/loanId=1')
       .set('authorization', token)
@@ -479,7 +479,7 @@ describe('tests', () => {
       });
     });
           
-    xit('should allow user check transactions', (done) => {
+    it('should allow user check transactions', (done) => {
       chai.request(server)
       .get('/api/v1/check-transaction-logs')
       .set('authorization', token)
@@ -492,7 +492,7 @@ describe('tests', () => {
       });
     });
           
-    xit('should allow user see loans', (done) => {
+    it('should allow user see loans', (done) => {
       chai.request(server)
       .get('/api/v1/see-loans')
       .set('authorization', token)
@@ -517,7 +517,7 @@ describe('tests', () => {
       });
     });
           
-    xit('should allow user see specific loan', (done) => {
+    it('should allow user see specific loan', (done) => {
       chai.request(server)
       .get('/api/v1/see-loan/loanId=1')
       .set('authorization', token)
