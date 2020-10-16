@@ -53,7 +53,7 @@ beforeEach('before tests', (done) => {
     VALUES
     ($1, $2, $3, $4, $5, $6)
    `, ['Claud Watari', 
-   ' claud@mail.com', '+254705724562', 
+   'claud@mail.com', '+254705724562', 
    '$2b$12$oqXZYn0zkQObNiCXT4TiQ.MSCnGkrVZljPk0pyCPf9PTfns4SRltq', true, 50000
     ]);
    pool.query(`
