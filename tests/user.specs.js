@@ -242,7 +242,6 @@ describe('login user', () => {
       .send(userModel.userSeven)
       .end((err, res) => {
         if(err) return done(err);
-        console.log(res.body);
         expect(res.status).to.equal(403);
         expect(res).to.be.a('object');
         done();
@@ -255,7 +254,6 @@ describe('login user', () => {
       .send(userModel.userNine)
       .end((err, res) => {
         if(err) return done(err);
-        console.log(res.body);
         expect(res.status).to.equal(200);
         expect(res).to.be.a('object');
         done();
@@ -303,7 +301,6 @@ describe('require valid token actions', (done) => {
       })
       .end((err, res) => {
         if(err) return done(err);
-        console.log(res.body);
         expect(res.status).to.equal(409);
         expect(res).to.be.a('object');
         done();
@@ -466,6 +463,7 @@ describe('require valid token actions', (done) => {
       })
       .end((err, res) => {
         if(err) return done(err);
+        console.log(res.body);
         expect(res.status).to.equal(200);
         expect(res).to.be.a('object');
         done();
@@ -478,6 +476,7 @@ describe('require valid token actions', (done) => {
       .set('authorization', token)
       .end((err, res) => {
         if(err) return done(err);
+        console.log(res.body);
         expect(res.status).to.equal(200);
         expect(res).to.be.a('object');
         done();
@@ -490,6 +489,7 @@ describe('require valid token actions', (done) => {
       .set('authorization', token)
       .end((err, res) => {
         if(err) return done(err);
+        console.log(res.body);
         expect(res.status).to.equal(200);
         expect(res).to.be.a('object');
         done();
@@ -498,7 +498,7 @@ describe('require valid token actions', (done) => {
           
     it('should allow user see specific loan with valid id', (done) => {
       chai.request(server)
-      .get('/api/v1/see-loans/loanId=1')
+      .get('/api/v1/see-loan/loanId=3')
       .set('authorization', token)
       .end((err, res) => {
         if(err) return done(err);
