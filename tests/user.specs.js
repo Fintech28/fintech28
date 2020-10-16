@@ -83,7 +83,7 @@ beforeEach('before tests', (done) => {
 
 afterEach('after all tests', (done) => {
   token = '';
-  pool.query(`DELETE FROM users WHERE email = $1`, [userModel.userFour.email], (err, re) => {
+  pool.query(`DELETE FROM users WHERE email = $1`, ['claud@mail.com'], (err, re) => {
     if(err) throw err;
   });
   done();
