@@ -235,6 +235,7 @@ describe('login user', () => {
       .send(userModel.userSeven)
       .end((err, res) => {
         if(err) return done(err);
+        console.log(res.body);
         expect(res.status).to.equal(403);
         expect(res).to.be.a('object');
         done();
@@ -247,6 +248,7 @@ describe('login user', () => {
       .send(userModel.userNine)
       .end((err, res) => {
         if(err) return done(err);
+        console.log(res.body);
         expect(res.status).to.equal(200);
         expect(res).to.be.a('object');
         done();
@@ -285,7 +287,7 @@ describe('require valid token actions', (done) => {
       });
     });
           
-    it('should allow user apply for loan with valid amount', (done) => {
+    it('should allow user apply for loan with valid amount as integer', (done) => {
       chai.request(server)
       .post('/api/v1/loan-application')
       .set('authorization', token)
@@ -294,6 +296,7 @@ describe('require valid token actions', (done) => {
       })
       .end((err, res) => {
         if(err) return done(err);
+        console.log(res.body);
         expect(res.status).to.equal(409);
         expect(res).to.be.a('object');
         done();
@@ -309,7 +312,6 @@ describe('require valid token actions', (done) => {
       })
       .end((err, res) => {
         if(err) return done(err);
-        console.log(token);
         expect(res.status).to.equal(201);
         expect(res).to.be.a('object');
         done();
