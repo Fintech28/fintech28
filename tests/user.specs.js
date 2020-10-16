@@ -171,7 +171,6 @@ describe('create user', () => {
       .send(userModel.userThree)
       .end((err, res) => {
         if(err) return done(err);
-        console.log(res.body);
         expect(res.status).to.equal(403);
         expect(res).to.be.a('object');
         done();
@@ -184,7 +183,6 @@ describe('create user', () => {
         .send(userModel.userFour)
         .end((err, res) => {
             if(err) return done(err);
-            console.log(res.body);
             expect(res.status).to.equal(201);
             expect(res).to.be.a('object');
             done();
@@ -311,7 +309,7 @@ describe('require valid token actions', (done) => {
       })
       .end((err, res) => {
         if(err) return done(err);
-        console.log(res.body);
+        console.log(token);
         expect(res.status).to.equal(201);
         expect(res).to.be.a('object');
         done();
