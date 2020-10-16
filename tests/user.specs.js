@@ -44,8 +44,35 @@ beforeEach('before tests', (done) => {
       dueon varchar(100),
       totaltorepay integer
     );
-    `
-  )
+    INSERT INTO users
+    (name, email, phone, password, isverified, balance)
+    VALUES
+    ($1, $2, $3, $4, $5, $6)
+
+    INSERT INTO loans (
+      byuserid, amount, isconfirmed, interestrate, totalrepaid, isfullyrepaid, monhsleft, dueon, totaltorepay)
+    VALUES ($7, $8, $9, $10, $11, $12, $13, $14, $15)
+
+    INSERT INTO transactions
+    (byuserid, transactiontype, amount)
+    VALUES
+    ($16, $17, $18)
+
+    INSERT INTO loans (
+      byuserid, amount, isconfirmed, interestrate, totalrepaid, isfullyrepaid, monhsleft, dueon, totaltorepay)
+    VALUES ($19, $20, $21, $22, $23, $24, $25, $26, $27)
+
+    `, ['Claud Watari', 
+        ' claud@mail.com', '+254705724562', 
+        '$2b$12$oqXZYn0zkQObNiCXT4TiQ.MSCnGkrVZljPk0pyCPf9PTfns4SRltq', true, 50000,
+      
+        1, 1000, false, 5, 0 ,false, 12, '2021-10-15', 16000,
+
+        1, 'Deposit', 100,
+      
+        1, 1500, false, 5, 0 ,false, 12, '2021-10-15', 16740,
+      ]
+   )
   token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImNsYXVkQG1haWwuY29tIiwiaWF0IjoxNjAyODUyMDQ4fQ.tY8z2FEBPlYS8hKb9j8Dz24ZtI96B4IFgHEP4p_m0BI';
   done();
 });
