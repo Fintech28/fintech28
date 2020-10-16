@@ -14,9 +14,9 @@ services:
 before_script:
   - npm install
   - psql -c 'create database fintech28;' -U postgres
-  - psql -c 'create table users (id serial primary key, name varchar(100), email varchar(100), phone varchar(50), password varchar(255), isverified boolean, balance integer);'
-  - psql -c ' create table transactions (id serial primary key, byuserid integer, transactiontype varchar(50), amount integer, datetime timestamp default current_timestamp);'
-  - psql -c 'create table loans (id serial primary key, byuserid integer, amount integer, senton timestamp default current_timestamp, isconfirmed boolean, interestrate integer, totalrepaid integer, isfullyrepaid boolean, monthsleft integer, dueon varchar(100), totaltorepay integer);'
+  - psql -c 'create table "users" (id serial primary key, name varchar(100), email varchar(100), phone varchar(50), password varchar(255), isverified boolean, balance integer);'
+  - psql -c ' create table "transactions" (id serial primary key, byuserid integer, transactiontype varchar(50), amount integer, datetime timestamp default current_timestamp);'
+  - psql -c 'create table "loans" (id serial primary key, byuserid integer, amount integer, senton timestamp default current_timestamp, isconfirmed boolean, interestrate integer, totalrepaid integer, isfullyrepaid boolean, monthsleft integer, dueon varchar(100), totaltorepay integer);'
 
 script:
 - npm run test
