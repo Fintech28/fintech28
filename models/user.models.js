@@ -1,8 +1,26 @@
 const userModel = {
-    userOne: {
+    userOne1: {
         name: '',
+        email: 'claudwatari.com',
+        phone: '0705724562',
+        password: 'mypassword'
+    },
+    userOne2: {
+        name: 'Claud Watari',
         email: '',
+        phone: '0705724562',
+        password: 'mypassword'
+    },
+    userOne3: {
+        name: 'Claud Watari',
+        email: 'claudwatari.com',
         phone: '',
+        password: 'mypassword'
+    },
+    userOne4: {
+        name: 'Claud Watari',
+        email: 'claudwatari.com',
+        phone: '0705724562',
         password: ''
     },
     userTwo: {
@@ -14,7 +32,7 @@ const userModel = {
     userThree: {
         name: 'Claud Watari',
         email: 'claud@mail.com',
-        phone: '+254 705 724562',
+        phone: '+254705724562',
         password: 'mypassword'
     },
     userFour: {
@@ -25,9 +43,21 @@ const userModel = {
     },
     userFive: {
         email: '',
-        password: ''
+        password: 'mypassword'
     },
     userSix: {
+        email: 'claud@mail.com',
+        password: ''
+    },
+    userSeven: {
+        email: 'claud@mail.com',
+        password: 'mypassword01'
+    },
+    userEight: {
+        email: 'claud@mailer.com',
+        password: 'mypassword'
+    },
+    userNine: {
         email: 'claud@mail.com',
         password: 'mypassword'
     }

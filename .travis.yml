@@ -1,0 +1,19 @@
+language: node_js
+node_js:
+  - '12'
+
+before_install:
+    - npm i -g npm@6.9.0
+
+notifications:
+  email: false
+
+services:
+  - postgresql
+
+before_script:
+  - npm install
+  - psql -c 'create database fintech28;' -U postgres
+
+script:
+- npm run test

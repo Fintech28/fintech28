@@ -149,7 +149,7 @@ const loginUser = (req, res) => {
             if(errCheckPassword) throw errCheckPassword;
 
             if(!passwordCheck) {
-                return res.status(409).json({
+                return res.status(403).json({
                     error: 'Invalid password'
                 });
             }
@@ -481,7 +481,7 @@ const userRepayLoan = (req, res) => {
             // calculate remaining balance after payment is successful
             const remainingBalance = parseInt(gotloan.rows[0].totaltorepay) - parseInt(amount);
             
-            if(parseInt(remainingBalance) <= 0) {
+            if(parseInt(remainingBalance) < 0) {
                 return res.status(409).json({
                     error: 'Balance cannot be less than zero'
                 });
@@ -513,7 +513,7 @@ const userRepayLoan = (req, res) => {
                 const newUserBalance = parseInt(gotUser.rows[0].balance) - parseInt(amount);
                 pool.query(`UPDATE users SET balance = $1 WHERE id = $2`, [newUserBalance, gotUser.rows[0].id], (errUpdateUserBal, updatedUserBal) => {
                     if(errUpdateUserBal) throw errUpdateUserBal;
-                    res.status(201).json({
+                    res.status(200).json({
                         message: `Repaid loan. Your balance is ${remainingBalance}`,
                         data: {
                             email: gotUser.rows[0].email,
