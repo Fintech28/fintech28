@@ -19,4 +19,15 @@ Will update individual endpoints as I test them. These can still be seen in the 
 
 ## FRONTEND
 
-Will be written in angular/typescript
+Written in angular/typescript
+
+Hosted on separate repo 'https://github.com/Fintech28/fintech28-ui'
+
+#### HEROKU LINK
+https://fintech-28.herokuapp.com/
+
+Only basic pc version of the landing page is available as of this commit
+
+```
+Will update individual pages in later commits.
+```
