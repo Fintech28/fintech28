@@ -27,6 +27,9 @@ router.patch('/api/v1/admin/verify-user/userId=:userId', adminCtrl.verifyUser);
 // admin approve loan
 router.patch('/api/v1/admin/approve-loan/loanId=:loanApplicationId', adminCtrl.reviewLoanApplication);
 
+// get auth token user
+router.get('/api/v1/logged-data', authUser.authUserFn, userCtrl.getLoggedUser);
+
 // user check transaction logs
 router.get('/api/v1/check-transaction-logs', authUser.authUserFn, userCtrl.userCheckTransactions);
 
@@ -41,8 +44,5 @@ router.get('/api/v1/check-balance', authUser.authUserFn, userCtrl.checkBalance);
 router.get('/api/v1/see-loans', authUser.authUserFn, userCtrl.userSeeAllLoans);
 // user view specific loan
 router.get('/api/v1/see-loan/loanId=:loanId', authUser.authUserFn, userCtrl.userSeeSpecificLoan);
-
-// get auth token user
-router.get('api/v1/logged-data', authUser.authUserFn, userCtrl.getLoggedUser);
 
 module.exports = router;
