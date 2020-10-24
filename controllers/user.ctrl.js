@@ -605,7 +605,9 @@ const getLoggedUser = (req, res) => {
             data: {
                 email: gotUser.rows[0].email,
                 phone: gotUser.rows[0].phone,
-                name: gotUser.rows[0].name
+                name: gotUser.rows[0].name,
+                status: gotUser.rows[0].isverified,
+                balance: gotUser.rows[0].balance
             }
         });
     }) ;
