@@ -591,9 +591,7 @@ const userSeeAllLoans = (req, res, next) => {
 };
 
 const getLoggedUser = (req, res) => {
-    pool.query(`
-        SELECT * FROM users WHERE email = $1
-    `, [authedProp.email], (errGetUser, gotUser) => {
+    pool.query(` SELECT * FROM users WHERE email = $1`, [authedProp.email], (errGetUser, gotUser) => {
         if(errGetUser) throw errGetUser;
 
         if(gotUser.rows.length < 1) {
