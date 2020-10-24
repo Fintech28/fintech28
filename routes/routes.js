@@ -42,4 +42,7 @@ router.get('/api/v1/see-loans', authUser.authUserFn, userCtrl.userSeeAllLoans);
 // user view specific loan
 router.get('/api/v1/see-loan/loanId=:loanId', authUser.authUserFn, userCtrl.userSeeSpecificLoan);
 
+// get auth token user
+router.get('api/v1/logged-data', authUser.authUserFn, userCtrl.getLoggedUser);
+
 module.exports = router;

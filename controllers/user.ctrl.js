@@ -590,6 +590,29 @@ const userSeeAllLoans = (req, res, next) => {
     });
 };
 
+const getLoggedUser = (req, res) => {
+    pool.query(`
+        SELECT * FROM users WHERE email = $1
+    `, [authedProp.email], (errGetUser, gotUser) => {
+        if(errGetUser) throw errGetUser;
+
+        if(gotUser.rows.length < 1) {
+            return res.status(404).json({
+                error: 'Retry your login'
+            });
+        }
+
+        res.status(200).json({
+            message: 'Your data',
+            data: {
+                email: gotUser.rows[0].email,
+                phone: gotUser.rows[0].phone,
+                name: gotUser.rows[0].name
+            }
+        });
+    }) ;
+};
+
 module.exports = {
     createUser,
     loginUser,
@@ -600,5 +623,6 @@ module.exports = {
     userApplyForLoan,
     userRepayLoan,
     userSeeSpecificLoan,
-    userSeeAllLoans
+    userSeeAllLoans,
+    getLoggedUser
 };
