@@ -301,6 +301,7 @@ const userWithdrawFromAccount = (req, res) => {
 
         // calculate total balance now
         const newBalance = parseInt(loggedUser.rows[0].balance) - parseInt(amount);
+        
         if(newBalance < 0) {
             return res.status(409).json({
                 error: `Balance cannot be less than zero. Your balance is ${loggedUser.rows[0].balance}`
