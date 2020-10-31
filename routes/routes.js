@@ -38,6 +38,9 @@ router.get('/api/v1/admin/users', adminCtrl.seeAllUsers);
 // admin see single users
 router.get('/api/v1/admin/users/userId=:userId', adminCtrl.seeSingleUser);
 
+// admin see all loans
+router.get('/api/v1/admin/loans', adminCtrl.seeAllLoans);
+
 // user check balance
 router.get('/api/v1/check-balance', authUser.authUserFn, userCtrl.checkBalance);
 // user view all loan

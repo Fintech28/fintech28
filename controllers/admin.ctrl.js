@@ -65,7 +65,7 @@ const seeAllUsers = (req, res) => {
     });
 };
 
-const seeSingleUser = (req, res, next) => {
+const seeSingleUser = (req, res) => {
     const {
         userId
     } = req.params; // fetch from url
@@ -106,6 +106,22 @@ const seeSingleUser = (req, res, next) => {
                 balance: userBalance,
                 isverified: userStatus
             }
+        });
+    });
+};
+
+const seeAllLoans = (req, res) => {
+    pool.query(`SELECT * FROM loans ORDER BY id DESC`, (errGetLoans, gotLoans) => {
+        if(errGetLoans) throw errGetLoans;
+        if(gotLoans.rows.length < 1) {
+            return res.status(404).json({
+                error: `No loans found at this time`
+            });
+        }
+        
+        res.status(200).json({
+            message: 'Loans available',
+            data: gotLoans.rows
         });
     });
 };
@@ -173,5 +189,6 @@ module.exports = {
     verifyUser,
     seeAllUsers,
     seeSingleUser,
-    reviewLoanApplication
+    reviewLoanApplication,
+    seeAllLoans
 }
