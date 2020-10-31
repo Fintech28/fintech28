@@ -60,12 +60,7 @@ const seeAllUsers = (req, res) => {
         // return data with populated arrays (these are in descending order of Id)
         res.status(200).json({
             message: 'Finteh28 users',
-            data: {
-                userEmails: userEmails,
-                userPhones: userPhones,
-                userBalances: userBalances,
-                userStatuses: userStatuses
-            }
+            data: allUsers
         });
     });
 };
