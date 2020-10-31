@@ -7,7 +7,7 @@ const checkInputIsString = (input) => {
     return true;
 };
 const checkInputIsNumber = (input) => {
-    if(!input.match(numberChecker)) return false;
+    if(!input.toString().match(numberChecker)) return false;
     return true;
 };
 const checkInputIsValidEmail = (input) => {
